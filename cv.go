@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
 	"gocv.io/x/gocv"
 	"image"
+	"os"
 )
 
 // 在图像中搜索模板，并返回匹配位置
@@ -24,17 +24,20 @@ func findTemplate(img gocv.Mat, template gocv.Mat) image.Point {
 	}
 }
 
-func cv() {
+func cv() image.Point {
+	dir, errs := os.Getwd()
+	if errs != nil {
+		logs.Set(errs.Error())
+		panic(errs)
+	}
 	// 读取原图和模板图
-	img := gocv.IMRead("./imgs/2.png", gocv.IMReadColor)
-	template := gocv.IMRead("./imgs/2_.png", gocv.IMReadColor)
+	img := gocv.IMRead(dir+"/imgs/2.png", gocv.IMReadColor)
+	template := gocv.IMRead(dir+"/imgs/2_.png", gocv.IMReadColor)
 	defer img.Close()
 	defer template.Close()
 
 	// 在原图中搜索模板
-	loc := findTemplate(img, template)
-	fmt.Println(loc.X, "====", loc.Y)
-
+	return findTemplate(img, template)
 
 	// 绘制匹配结果
 	//if loc.X != -1 && loc.Y != -1 {
